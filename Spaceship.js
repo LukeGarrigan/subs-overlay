@@ -4,6 +4,7 @@ function Spaceship(name, spaceship) {
   this.name = name;
   this.x = random(MAP_WIDTH / 2);
   this.y = random(MAP_HEIGHT / 2);
+  this.trail = [];
 
   this.acceleration = createVector(0, 0);
   this.velocity = p5.Vector.random2D();
@@ -12,6 +13,9 @@ function Spaceship(name, spaceship) {
   this.padding = 50;
 
   this.update = function () {
+    this.trail.push({x: this.position.x, y:this.position.y});
+    if(this.trail.length > 150)
+      this.trail.splice(0,1);
     this.velocity.limit(1);
     this.velocity.add(this.acceleration);
     this.position.add(this.velocity);
@@ -19,6 +23,15 @@ function Spaceship(name, spaceship) {
 
 
   this.draw = function () {
+    push();
+    fill(255,127,0,15);
+    blendMode(ADD);
+    for(let i = 75; i < this.trail.length; i++){
+      let part = this.trail[i];
+      ellipse(part.x, part.y, (i-75)/4);
+    }
+    pop();
+
     fill(0);
     noStroke();
     imageMode(CENTER);
@@ -88,9 +101,5 @@ function Spaceship(name, spaceship) {
       steer.limit(0.001);
       this.acceleration.add(steer);
     }
-
   }
-
-
-
 }
