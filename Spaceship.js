@@ -28,7 +28,7 @@ function Spaceship(name, spaceship) {
     blendMode(ADD);
     for(let i = 75; i < this.trail.length; i++){
       let part = this.trail[i];
-      ellipse(part.x, part.y, (i-75)/4);
+      ellipse(part.x += random(-0.3,0.3), part.y += random(-0.3,0.3), (i-75)/4);
     }
     pop();
 
