@@ -23,20 +23,11 @@ function Spaceship(name, spaceship) {
 
 
   this.draw = function () {
-    push();
-    fill(255,127,0,15);
-    blendMode(ADD);
-    for(let i = 75; i < this.trail.length; i++){
-      let part = this.trail[i];
-      ellipse(part.x += random(-0.3,0.3), part.y += random(-0.3,0.3), (i-75)/4);
-    }
-    pop();
+    this.drawTrail();
 
     fill(0);
     noStroke();
     imageMode(CENTER);
-    fill(0);
-
     push();
     translate(this.position.x, this.position.y);
     let radians = atan2(this.velocity.y, this.velocity.x);
@@ -47,7 +38,7 @@ function Spaceship(name, spaceship) {
 
 
     push();
-    stroke(100);
+    stroke(200);
     beginShape();
     noFill();
     vertex(this.position.x-8, this.position.y-37);
@@ -56,10 +47,31 @@ function Spaceship(name, spaceship) {
     endShape();
     pop();
 
-    text(this.name, this.position.x + 45, this.position.y-47);
+
+    this.drawText();
+
   };
 
 
+  this.drawTrail = function() {
+    push();
+    fill(255,127,10,30);
+    // blue flame
+    //fill(100,200,255,30)
+    blendMode(ADD);
+    for(let i = 75; i < this.trail.length; i++){
+      let part = this.trail[i];
+      ellipse(part.x += random(-0.3,0.3), part.y += random(-0.3,0.3), (i-75)/4);
+    }
+    pop();
+  };
+
+  this.drawText = function() {
+    push();
+    fill(255);
+    text(this.name, this.position.x + 45, this.position.y-47);
+    pop();
+  };
 
   this.constrain = function () {
     if (this.position.x < -this.padding) {
