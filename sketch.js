@@ -12,7 +12,7 @@ function preload() {
 function setup() {
   createCanvas(370, 700);
 
-  // background(200);
+  background(200);
   // let subscriberList = loadJSON("https://api.twitch.tv/kraken/channels/240986836/subscriptions");
   let bronzeSpaceship = loadImage("images/Bronze_ship.png");
   let silverSpaceship = loadImage("images/Silver_ship.png");
@@ -35,22 +35,12 @@ function setup() {
     spaceships.push(spaceship);
 
   }
-
-
-
-
-
-
 }
 
 
-
 function draw() {
-  // background(200);
-  clear();
-  // for (let i = 0; i < NUM_SNOW_FLAKES; i++) {
-
-  // }
+   background(200);
+  //clear();
 
   if (snows.length < NUM_SNOW_FLAKES) {
     if (random(1) < 0.25) {
@@ -62,7 +52,9 @@ function draw() {
     ship.update();
     ship.seperate(spaceships);
     ship.constrain();
-    ship.draw();
+    if (ship.isInViewOfScreen()) {
+      ship.draw();
+    }
   }
 
   for (let snow of snows) {

@@ -74,17 +74,25 @@ function Spaceship(name, spaceship) {
   };
 
   this.constrain = function () {
-    if (this.position.x < -this.padding) {
+    if (this.position.x < -MAP_WIDTH-this.padding) {
       this.position.x = MAP_WIDTH;
     } else if (this.position.x > MAP_WIDTH + this.padding) {
-      this.position.x = 0;
+      this.position.x = -MAP_WIDTH;
     }
-    if (this.position.y < -this.padding) {
+    if (this.position.y < -MAP_HEIGHT -this.padding) {
       this.position.y = MAP_HEIGHT;
     } else if (this.position.y > MAP_HEIGHT + this.padding) {
-      this.position.y = 0;
+      this.position.y = -MAP_HEIGHT;
     }
   };
+
+
+  this.isInViewOfScreen = function () {
+    if (this.position.x > -this.padding && this.position.x < width + this.padding && this.position.y > -this.padding && this.position.y < height +this.padding) {
+      return true;
+    }
+    return false;
+  }
 
 
   this.seperate = function (ships) {
