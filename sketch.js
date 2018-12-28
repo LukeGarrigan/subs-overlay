@@ -41,7 +41,6 @@ function setup() {
 function draw() {
    background(0);
   //clear();
-
   if (snows.length < NUM_SNOW_FLAKES) {
     if (random(1) < 0.25) {
       snows.push(new Snow());
@@ -61,20 +60,10 @@ function draw() {
     snow.update();
     snow.draw();
   }
-
   displayMembersCount();
-
 }
 
-function displayMembersCount() {
-  push();
-  fill(255);
-  textAlign(CENTER);
-  textSize(15);
-  text(subs.length +" current members", width/2 , height-20);
-  pop();
 
-}
 
 
 
