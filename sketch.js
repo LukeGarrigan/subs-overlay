@@ -12,7 +12,7 @@ function preload() {
 function setup() {
   createCanvas(370, 700);
 
-  background(200);
+  background(0);
   // let subscriberList = loadJSON("https://api.twitch.tv/kraken/channels/240986836/subscriptions");
   let bronzeSpaceship = loadImage("images/Bronze_ship.png");
   let silverSpaceship = loadImage("images/Silver_ship.png");
@@ -39,7 +39,7 @@ function setup() {
 
 
 function draw() {
-   background(200);
+   background(0);
   //clear();
 
   if (snows.length < NUM_SNOW_FLAKES) {
@@ -62,6 +62,14 @@ function draw() {
     snow.draw();
   }
 
+
+
+  push();
+  fill(255);
+  textAlign(CENTER);
+  textSize(15);
+  text(subs.length +" current members", width/2 , height-20);
+  pop();
 }
 
 
