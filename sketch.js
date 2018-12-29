@@ -26,13 +26,13 @@ function setup() {
 
     let spaceship;
     if (name === 'codeheir') {
-      spaceship = new Spaceship(name,diamondSpaceship);
+      spaceship = new Spaceship(name,diamondSpaceship, true);
     } else if (Date.now() - date > (7776000000*2) ) {
-       spaceship = new Spaceship(name,goldSpaceship);
+       spaceship = new Spaceship(name,goldSpaceship, false);
     } else if (Date.now() - date > 7776000000){
-       spaceship = new Spaceship(name,silverSpaceship);
+       spaceship = new Spaceship(name,silverSpaceship, false);
     } else {
-       spaceship = new Spaceship(name,bronzeSpaceship);
+       spaceship = new Spaceship(name,bronzeSpaceship, false);
     }
     spaceships.push(spaceship);
   }
