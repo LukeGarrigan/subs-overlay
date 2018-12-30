@@ -7,7 +7,7 @@ const NUM_SNOW_FLAKES = 200;
 let subs = [];
 let snows = [];
 let json;
-
+let apiViewersCount = 0;
 function preload() {
   subs = loadStrings("subscribers.txt");
   json = loadJSON(getCurrentViewersUrl());
@@ -15,10 +15,7 @@ function preload() {
 
 function setup() {
   createCanvas(370, 700);
-
   background(0);
-
-  // let subscriberList = loadJSON("https://api.twitch.tv/kraken/channels/240986836/subscriptions");
 
   let viewers = json.chatters.viewers;
   viewers = viewers.concat(json.chatters.moderators);
@@ -47,9 +44,13 @@ function setup() {
   }
 }
 
-
 function draw() {
   background(0);
+  apiViewersCount++;
+  if (apiViewersCount % 200 === 0) {
+    loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
+  }
+
   //clear();
   if (snows.length < NUM_SNOW_FLAKES) {
     if (random(1) < 0.25) {
