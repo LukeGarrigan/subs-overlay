@@ -3,17 +3,36 @@ let spaceships = [];
 const MAP_WIDTH = 700;
 const MAP_HEIGHT = 700;
 const NUM_SNOW_FLAKES = 200;
+const STREAM_NAME = "codeheir";
 
 let subs = [];
 let snows = [];
+let json;
+
 function preload() {
   subs = loadStrings("subscribers.txt");
+  json = loadJSON("https://tmi.twitch.tv/group/user/" + STREAM_NAME + "/chatters");
 }
+
+function isSubCurrentlyActive(name, viewers) {
+  for (let viewer of viewers) {
+    if (name === viewer) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function setup() {
   createCanvas(370, 700);
 
   background(0);
+
   // let subscriberList = loadJSON("https://api.twitch.tv/kraken/channels/240986836/subscriptions");
+
+  let viewers = json.chatters.viewers;
+  viewers = viewers.concat(json.chatters.moderators);
+
   let bronzeSpaceship = loadImage("images/Bronze_ship.png");
   let silverSpaceship = loadImage("images/Silver_ship.png");
   let goldSpaceship = loadImage("images/Gold_ship.png");
@@ -21,18 +40,21 @@ function setup() {
   for (let sub of subs) {
     let subscriberInfo = sub.split(',');
     let name = subscriberInfo[0];
+
+    let isActive = isSubCurrentlyActive(name, viewers);
+
     let dateSubbed = subscriberInfo[1];
     let date = Date.parse(dateSubbed);
 
     let spaceship;
     if (name === 'codeheir') {
-      spaceship = new Spaceship(name,diamondSpaceship, true);
-    } else if (Date.now() - date > (7776000000*2) ) {
-       spaceship = new Spaceship(name,goldSpaceship, false);
-    } else if (Date.now() - date > 7776000000){
-       spaceship = new Spaceship(name,silverSpaceship, false);
+      spaceship = new Spaceship(name, diamondSpaceship, isActive);
+    } else if (Date.now() - date > (7776000000 * 2)) {
+      spaceship = new Spaceship(name, goldSpaceship, isActive);
+    } else if (Date.now() - date > 7776000000) {
+      spaceship = new Spaceship(name, silverSpaceship, isActive);
     } else {
-       spaceship = new Spaceship(name,bronzeSpaceship, false);
+      spaceship = new Spaceship(name, bronzeSpaceship, isActive);
     }
     spaceships.push(spaceship);
   }
@@ -40,7 +62,7 @@ function setup() {
 
 
 function draw() {
-   background(0);
+  background(0);
   //clear();
   if (snows.length < NUM_SNOW_FLAKES) {
     if (random(1) < 0.25) {
