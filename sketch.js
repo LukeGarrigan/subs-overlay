@@ -3,7 +3,6 @@ let spaceships = [];
 const MAP_WIDTH = 700;
 const MAP_HEIGHT = 700;
 const NUM_SNOW_FLAKES = 200;
-const STREAM_NAME = "codeheir";
 
 let subs = [];
 let snows = [];
@@ -11,16 +10,7 @@ let json;
 
 function preload() {
   subs = loadStrings("subscribers.txt");
-  json = loadJSON("https://tmi.twitch.tv/group/user/" + STREAM_NAME + "/chatters");
-}
-
-function isSubCurrentlyActive(name, viewers) {
-  for (let viewer of viewers) {
-    if (name === viewer) {
-      return true;
-    }
-  }
-  return false;
+  json = loadJSON(getCurrentViewersUrl());
 }
 
 function setup() {
@@ -40,12 +30,9 @@ function setup() {
   for (let sub of subs) {
     let subscriberInfo = sub.split(',');
     let name = subscriberInfo[0];
-
     let isActive = isSubCurrentlyActive(name, viewers);
-
     let dateSubbed = subscriberInfo[1];
     let date = Date.parse(dateSubbed);
-
     let spaceship;
     if (name === 'codeheir') {
       spaceship = new Spaceship(name, diamondSpaceship, isActive);
