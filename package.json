@@ -1,0 +1,24 @@
+{
+  "name": "sub-flocking",
+  "version": "1.0.0",
+  "description": "Sub overlay",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LukeGarrigan/subs-overlay.git"
+  },
+  "author": "lg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LukeGarrigan/subs-overlay/issues"
+  },
+  "homepage": "https://github.com/LukeGarrigan/subs-overlay#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  }
+}
