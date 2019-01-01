@@ -1,3 +1,4 @@
+
 const STREAM_NAME = "test";
 
 function isSubCurrentlyActive(name, viewers) {
@@ -18,6 +19,7 @@ function updateCurrentViewers(json) {
   let viewers = json.chatters.viewers;
   viewers = viewers.concat(json.chatters.moderators);
 
+  let subs = [];
   for (let spaceship of spaceships) {
     if (isSubCurrentlyActive(spaceship.name, viewers)) {
       if (!spaceship.active) {
@@ -27,6 +29,14 @@ function updateCurrentViewers(json) {
     } else {
       spaceship.active = false;
     }
+
+    let sub = {
+      name: spaceship.name,
+    }
+
+    subs.push(sub);
   }
+
+  socket.emit('updateSubs', subs);
 }
 

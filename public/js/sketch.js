@@ -7,6 +7,7 @@ const NUM_SNOW_FLAKES = 200;
 let subs = [];
 let snows = [];
 let apiViewersCount = 0;
+let socket;
 function preload() {
   subs = loadStrings("subscribers.txt");
 }
@@ -15,6 +16,7 @@ function setup() {
   createCanvas(370, 700);
   background(0);
 
+  socket = io.connect("http://localhost:9999");
   let bronzeSpaceship = loadImage("images/Bronze_ship.png");
   let silverSpaceship = loadImage("images/Silver_ship.png");
   let goldSpaceship = loadImage("images/Gold_ship.png");
