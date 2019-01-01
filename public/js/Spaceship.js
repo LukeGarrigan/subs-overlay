@@ -1,11 +1,11 @@
-function Spaceship(name, spaceship, active) {
+function Spaceship(name, spaceship) {
 
   this.spaceshipImage = spaceship;
   this.name = name;
   this.x = random(MAP_WIDTH / 2);
   this.y = random(MAP_HEIGHT / 2);
   this.trail = [];
-  this.active = active;
+  this.active = false;
 
   this.acceleration = createVector(0, 0);
   this.velocity = p5.Vector.random2D();

@@ -1,4 +1,4 @@
-const STREAM_NAME = "codeheir";
+const STREAM_NAME = "test";
 
 function isSubCurrentlyActive(name, viewers) {
   for (let viewer of viewers) {
@@ -10,18 +10,23 @@ function isSubCurrentlyActive(name, viewers) {
 }
 
 function getCurrentViewersUrl() {
-  return "https://tmi.twitch.tv/group/user/" + STREAM_NAME + "/chatters";
+  return "https://cors.io/?http://tmi.twitch.tv/group/user/" + STREAM_NAME + "/chatters";
 }
 
 function updateCurrentViewers(json) {
+  console.log("Successfully made get viewers api call");
   let viewers = json.chatters.viewers;
   viewers = viewers.concat(json.chatters.moderators);
 
   for (let spaceship of spaceships) {
     if (isSubCurrentlyActive(spaceship.name, viewers)) {
-      spaceship.active = true;
+      if (!spaceship.active) {
+        console.log(spaceship.name +" is now watching!");
+        spaceship.active = true;
+      }
     } else {
       spaceship.active = false;
     }
   }
 }
+

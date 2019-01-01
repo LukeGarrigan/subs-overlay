@@ -1,10 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 var app = express();
-var server = app.listen(9999);
+
+app.use(cors());
+
 
 
 app.use(express.static('public'));
 
+var server = app.listen(9999);
 
 
 
