@@ -14,6 +14,7 @@ let subs = [];
 let ores = [];
 let apiViewersCount = 0;
 let socket;
+let numberOfViewers = 0;
 function preload() {
   subs = loadStrings("subscribers.txt");
 }

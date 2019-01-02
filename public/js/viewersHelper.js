@@ -19,6 +19,7 @@ function updateCurrentViewers(json) {
   let viewers = json.chatters.viewers;
   viewers = viewers.concat(json.chatters.moderators);
 
+  numberOfViewers = viewers.length;
   let subs = [];
   for (let spaceship of spaceships) {
     if (isSubCurrentlyActive(spaceship.name, viewers)) {
@@ -33,7 +34,7 @@ function updateCurrentViewers(json) {
     let sub = {
       name: spaceship.name,
       xp : spaceship.xp
-    }
+    };
 
     subs.push(sub);
   }

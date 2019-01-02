@@ -130,10 +130,19 @@ class Spaceship {
   }
 
   mined() {
+    let increment;
     if (this.active) {
-      this.xp += 6;
+      increment += 6;
     } else {
-      this.xp += 2;
+      increment += 2;
+    }
+
+    if (numberOfViewers > 20) {
+      this.xp += increment*2
+    } else if (numberOfViewers > 10) {
+      this.xp += increment*1.5
+    } else {
+      this.xp += increment;
     }
 
   }
