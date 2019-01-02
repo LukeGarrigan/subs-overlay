@@ -11,7 +11,6 @@ const MAP_HEIGHT = 700;
 const NUM_ORES = 100;
 
 let subs = [];
-let snows = [];
 let ores = [];
 let apiViewersCount = 0;
 let socket;
@@ -58,7 +57,8 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  // background(0);
+  clear();
   apiViewersCount++;
   if (apiViewersCount % 200 === 0) {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
