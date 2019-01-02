@@ -1,11 +1,18 @@
 let spaceships = [];
 
+const LEVEL_TWO = 1000;
+const LEVEL_THREE = 3000;
+const LEVEL_FOUR = 6000;
+const LEVEL_FIVE = 10000;
+
+
 const MAP_WIDTH = 700;
 const MAP_HEIGHT = 700;
-const NUM_SNOW_FLAKES = 200;
+const NUM_ORES = 100;
 
 let subs = [];
 let snows = [];
+let ores = [];
 let apiViewersCount = 0;
 let socket;
 function preload() {
@@ -38,6 +45,16 @@ function setup() {
     }
     spaceships.push(spaceship);
   }
+
+  socket.on('getSub', updateSubs);
+
+
+  for (let i = 0; i < NUM_ORES; i++) {
+    let ore = new Ore();
+    ores.push(ore);
+  }
+
+
 }
 
 function draw() {
@@ -47,12 +64,6 @@ function draw() {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
   }
 
-  //clear();
-  if (snows.length < NUM_SNOW_FLAKES) {
-    if (random(1) < 0.25) {
-      snows.push(new Snow());
-    }
-  }
 
   for (let ship of spaceships) {
     ship.update();
@@ -63,13 +74,28 @@ function draw() {
     }
   }
 
-  for (let snow of snows) {
-    snow.update();
-    snow.draw();
+  for (let ore of ores) {
+    ore.display();
+  }
+
+  for (let ship of spaceships) {
+    for (let ore of ores) {
+      if (dist(ship.position.x, ship.position.y, ore.x, ore.y) < (ore.radius+20)) {
+        ore.respawn();
+        ship.mined();
+      }
+    }
   }
   displayMembersCount();
 }
 
+function updateSubs(data) {
+  for (let spaceship of spaceships) {
+    if (data.name === spaceship.name) {
+      spaceship.xp = data.xp;
+    }
+  }
+}
 
 
 

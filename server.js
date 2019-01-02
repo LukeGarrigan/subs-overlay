@@ -40,7 +40,20 @@ function updateSubs(subs) {
 
     output.then(result => {
       if (result.recordset[0] !== undefined) {
-        console.log(sub.name);
+        let persistedSub = result.recordset[0];
+        if (persistedSub.experience > sub.xp) {
+
+          let returnSub = {
+            name: persistedSub.username,
+            xp: persistedSub.experience
+          }
+          console.log("Emmitting to client " + persistedSub.username);
+          io.sockets.emit('getSub', returnSub);
+
+        } else {
+
+          updatePersistedSub(sub);
+        }
       } else {
         createNewSub(sub);
       }
@@ -49,15 +62,23 @@ function updateSubs(subs) {
        console.log("errored for " + sub.name);
     });
 
-
   }
-
 
 }
 
 
+function updatePersistedSub(sub) {
+  let query = `update subs set experience = '${sub.xp}' where username = '${sub.name}'`;
+
+  let result = sql.query(query);
+
+  result.then(data => {
+
+  }).catch(err => {
+  });
+}
+
 function createNewSub(sub) {
-  console.log("Creating new sub " + sub.name);
 
   let query = `begin 
       if not exists (select * from subs
@@ -71,7 +92,6 @@ function createNewSub(sub) {
   let output = sql.query(query);
 
   output.then(result => {
-    console.log("succesfully added " + sub.name);
   }).catch(err => {
     console.log(err);
     console.log("error adding " + sub.name);

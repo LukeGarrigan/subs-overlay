@@ -1,5 +1,5 @@
 
-const STREAM_NAME = "test";
+const STREAM_NAME = "codeheir";
 
 function isSubCurrentlyActive(name, viewers) {
   for (let viewer of viewers) {
@@ -32,6 +32,7 @@ function updateCurrentViewers(json) {
 
     let sub = {
       name: spaceship.name,
+      xp : spaceship.xp
     }
 
     subs.push(sub);
