@@ -1,9 +1,5 @@
 let spaceships = [];
 
-const LEVEL_TWO = 1000;
-const LEVEL_THREE = 3000;
-const LEVEL_FOUR = 6000;
-const LEVEL_FIVE = 10000;
 
 
 const MAP_WIDTH = 700;
@@ -58,8 +54,8 @@ function setup() {
 }
 
 function draw() {
-  // background(0);
-  clear();
+  background(0);
+  // clear();
   apiViewersCount++;
   if (apiViewersCount % 200 === 0) {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
@@ -73,18 +69,13 @@ function draw() {
     if (ship.isInViewOfScreen()) {
       ship.draw();
     }
-  }
 
-  for (let ore of ores) {
-    ore.display();
-  }
-
-  for (let ship of spaceships) {
     for (let ore of ores) {
       if (dist(ship.position.x, ship.position.y, ore.x, ore.y) < (ore.radius+20)) {
         ore.respawn();
         ship.mined();
       }
+      ore.display();
     }
   }
   displayMembersCount();

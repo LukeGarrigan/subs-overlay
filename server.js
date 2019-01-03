@@ -28,8 +28,6 @@ function connectionMade(socket) {
 
 }
 
-
-
 function updateSubs(subs) {
   console.log("Updating subs");
 
@@ -42,14 +40,7 @@ function updateSubs(subs) {
       if (result.recordset[0] !== undefined) {
         let persistedSub = result.recordset[0];
         if (persistedSub.experience > sub.xp) {
-
-          let returnSub = {
-            name: persistedSub.username,
-            xp: persistedSub.experience
-          }
-          console.log("Emmitting to client " + persistedSub.username);
-          io.sockets.emit('getSub', returnSub);
-
+          updateClientWithPersistedSub(persistedSub);
         } else {
 
           updatePersistedSub(sub);
@@ -64,6 +55,17 @@ function updateSubs(subs) {
 
   }
 
+}
+
+
+
+function updateClientWithPersistedSub(persistedSub) {
+  let returnSub = {
+    name: persistedSub.username,
+    xp: persistedSub.experience
+  }
+  console.log("Emmitting to client " + persistedSub.username);
+  io.sockets.emit('getSub', returnSub);
 }
 
 

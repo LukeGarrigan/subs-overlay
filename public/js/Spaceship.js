@@ -15,7 +15,7 @@ class Spaceship {
     this.padding = 50;
 
     this.lvl = 1;
-    this.xp = 0;
+    this.xp = 1;
 
   }
 
@@ -41,8 +41,10 @@ class Spaceship {
 
   drawText() {
     push();
+
+    this.lvl = getLevel(this.xp);
     this.active ? fill(0, 255, 0) : fill(255);
-    text(this.name + " (" + this.lvl + ")", this.position.x + 45, this.position.y - 47);
+    text(this.name + " (" + this.lvl+ ")", this.position.x + 45, this.position.y - 47);
     pop();
   }
 
@@ -81,9 +83,6 @@ class Spaceship {
     this.velocity.limit(1);
     this.velocity.add(this.acceleration);
     this.position.add(this.velocity);
-
-
-    this.updateLevel();
 
   }
 
@@ -130,12 +129,7 @@ class Spaceship {
   }
 
   mined() {
-    let increment;
-    if (this.active) {
-      increment += 6;
-    } else {
-      increment += 2;
-    }
+    let increment = this.active ? 6 : 2;
 
     if (numberOfViewers > 20) {
       this.xp += increment*2
@@ -147,15 +141,5 @@ class Spaceship {
 
   }
 
-  updateLevel() {
-    if (this.xp > LEVEL_TWO) {
-      this.lvl = 2;
-    } else if (this.xp > LEVEL_THREE) {
-      this.lvl = 3;
-    } else if (this.xp > LEVEL_FOUR) {
-      this.lvl = 4;
-    } else if (this.xp > LEVEL_FIVE) {
-      this.lvl = 5;
-    }
-  }
+
 }
