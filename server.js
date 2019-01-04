@@ -71,11 +71,15 @@ function connectionMade(socket) {
             output += " (You are position " + i + ")";
           }
         }
-
-
-
       }
       client.say("codeheir", output)
+    } else if (message.includes("!lvl") || message.includes("!xp") || message.includes("!level") || message.includes("!experience")) {
+      let name = message.split(" ")[1];
+      if (isSub(name)) {
+        let sub = getSub(name);
+        let output = sub.name + " is level " + getLevel(sub.xp) + " ("+sub.xp+")";
+        client.say("codeheir", output);
+      }
     }
   });
 }
