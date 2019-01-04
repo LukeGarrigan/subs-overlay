@@ -2,8 +2,8 @@ let spaceships = [];
 
 
 
-const MAP_WIDTH = 700;
-const MAP_HEIGHT = 700;
+const MAP_WIDTH = 500;
+const MAP_HEIGHT = 500;
 const NUM_ORES = 100;
 
 let subs = [];
@@ -43,6 +43,7 @@ function setup() {
   }
 
   socket.on('getSub', updateSubs);
+  socket.on('changeFlame', changeFlame);
 
 
   for (let i = 0; i < NUM_ORES; i++) {
@@ -54,8 +55,8 @@ function setup() {
 }
 
 function draw() {
-  background(0);
-  // clear();
+  // background(0);
+  clear();
   apiViewersCount++;
   if (apiViewersCount % 200 === 0) {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
@@ -89,7 +90,17 @@ function updateSubs(data) {
   }
 }
 
+function changeFlame(data) {
 
+  let name = data.name;
+  let colour = data.colour;
+
+  for (let spaceship of spaceships) {
+    if (spaceship.name === name) {
+      spaceship.changeFlame(colour);
+    }
+  }
+}
 
 
 

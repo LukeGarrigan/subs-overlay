@@ -17,6 +17,7 @@ class Spaceship {
     this.lvl = 1;
     this.xp = 1;
 
+    this.flameColour = "red";
   }
 
   isInViewOfScreen() {
@@ -28,9 +29,12 @@ class Spaceship {
 
   drawTrail() {
     push();
-    fill(255, 127, 10, 30);
-    // blue flame
-    //fill(100,200,255,30)
+    if (this.flameColour === "red") {
+      fill(255, 127, 10, 30);
+    } else if (this.flameColour === "blue") {
+      fill(100,200,255,30)
+    }
+
     blendMode(ADD);
     for (let i = 75; i < this.trail.length; i++) {
       let part = this.trail[i];
@@ -139,6 +143,10 @@ class Spaceship {
       this.xp += increment;
     }
 
+  }
+
+  changeFlame(colour) {
+    this.flameColour = colour;
   }
 
 
