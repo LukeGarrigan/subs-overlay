@@ -181,3 +181,5 @@ sql.connect(config).then(() => {
 function getLevel(exp) {
   return Math.ceil(0.04*Math.sqrt(exp));
 }
+
+

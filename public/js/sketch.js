@@ -3,7 +3,7 @@ let spaceships = [];
 
 
 const MAP_WIDTH = 500;
-const MAP_HEIGHT = 500;
+const MAP_HEIGHT = 700;
 const NUM_ORES = 100;
 
 let subs = [];
@@ -42,6 +42,7 @@ function setup() {
     spaceships.push(spaceship);
   }
 
+  loadJSON(getCurrentViewersUrl(), updateCurrentViewers);
   socket.on('getSub', updateSubs);
   socket.on('changeFlame', changeFlame);
 
@@ -55,8 +56,8 @@ function setup() {
 }
 
 function draw() {
-  // background(0);
-  clear();
+  background(0);
+ // clear();
   apiViewersCount++;
   if (apiViewersCount % 200 === 0) {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
