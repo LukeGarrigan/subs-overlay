@@ -6,7 +6,7 @@ exports.updateSubsForTwitchHandler = function (subscribers) {
   subs = subscribers;
 }
 
-exports.setupTwitchHandler = function(subscribers, io, sql) {
+exports.setupTwitchHandler = function (subscribers, io, sql) {
   subs = subscribers;
   let client = new tmi.client(myOptions);
   client.connect();
@@ -15,10 +15,6 @@ exports.setupTwitchHandler = function(subscribers, io, sql) {
 
 
     extractSubBadge(userstate, io, sql);
-
-
-
-
 
 
     if (message === "!flame blue" || message === "!flame orange") {
@@ -36,7 +32,7 @@ exports.setupTwitchHandler = function(subscribers, io, sql) {
         let sub = getSub(userstate.username, subs);
 
         let currentLevel = getLevel(sub.xp);
-        let output = "@" + userstate.username + " you are level " + currentLevel + " (" + sub.xp + "/" +getXpOfNextLevel(currentLevel+1) +"xp)";
+        let output = "@" + userstate.username + " you are level " + currentLevel + " (" + sub.xp + "/" + getXpOfNextLevel(currentLevel + 1) + "xp)";
         client.action("codeheir", output);
       }
     } else if (message === "!leaderboard") {
@@ -63,9 +59,23 @@ exports.setupTwitchHandler = function(subscribers, io, sql) {
       if (isSub(name, subs)) {
         let sub = getSub(name, subs);
         let currentLevel = getLevel(sub.xp);
-        let output = sub.name + " is level " + currentLevel + " (" + sub.xp + "/" + getXpOfNextLevel(currentLevel+1) +")";
+        let output = `${sub.name} is level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)})`;
         client.say("codeheir", output);
       }
+    } else if (message.includes("!rank")) {
+      let name = message.split(" ")[1];
+      if (isSub(name, subs)) {
+        subs.sort(function (first, second) {
+          return second.xp - first.xp
+        });
+
+        for (let i = 1; i < subs.length; i++) {
+          if (subs[i].name === name) {
+            client.say("codeheir", `${name} is rank ${i}`);
+          }
+        }
+      }
+
     }
   });
 };
@@ -75,7 +85,7 @@ function extractSubBadge(userstate, io, sql) {
 
   let username = userstate.username;
 
-  if (isSub(username,subs)) {
+  if (isSub(username, subs)) {
     let subscriberBadge = userstate.badges.subscriber;
 
     let dto = {
@@ -117,10 +127,10 @@ function getSub(username, subs) {
 
 
 function getLevel(exp) {
-  return Math.ceil(0.04*Math.sqrt(exp));
+  return Math.ceil(0.04 * Math.sqrt(exp));
 }
 
 function getXpOfNextLevel(lvl) {
-  return Math.pow(lvl /0.04, 2);
+  return Math.pow(lvl / 0.04, 2);
 }
 
