@@ -30,21 +30,15 @@ function setup() {
     let dateSubbed = subscriberInfo[1];
     let date = Date.parse(dateSubbed);
     let spaceship;
-    if (name === 'codeheir') {
-      spaceship = new Spaceship(name, diamondSpaceship);
-    } else if (Date.now() - date > (7776000000 * 2)) {
-      spaceship = new Spaceship(name, goldSpaceship);
-    } else if (Date.now() - date > 7776000000) {
-      spaceship = new Spaceship(name, silverSpaceship);
-    } else {
-      spaceship = new Spaceship(name, bronzeSpaceship);
-    }
+
+    spaceship = new Spaceship(name, bronzeSpaceship, silverSpaceship);
     spaceships.push(spaceship);
   }
 
   loadJSON(getCurrentViewersUrl(), updateCurrentViewers);
   socket.on('getSub', updateSubs);
   socket.on('changeFlame', changeFlame);
+  socket.on('updateSubscriberBadge', updateSubscriberBadge);
 
 
   for (let i = 0; i < NUM_ORES; i++) {
@@ -87,12 +81,12 @@ function updateSubs(data) {
   for (let spaceship of spaceships) {
     if (data.name === spaceship.name) {
       spaceship.xp = data.xp;
+      spaceship.ship = data.badge;
     }
   }
 }
 
 function changeFlame(data) {
-
   let name = data.name;
   let colour = data.colour;
 
@@ -101,6 +95,15 @@ function changeFlame(data) {
       spaceship.changeFlame(colour);
     }
   }
+}
+
+function updateSubscriberBadge(subscriberDto) {
+  for (let spaceship of spaceships) {
+    if (spaceship.name === subscriberDto.username) {
+      spaceship.changeShip(subscriberDto.badge);
+    }
+  }
+
 }
 
 

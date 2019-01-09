@@ -9,8 +9,9 @@ app.use(express.static('public'));
 let server = app.listen(9999);
 let subscribers = [];
 
-twitchHandler.setupTwitchHandler(subscribers);
 let io = socket(server);
+twitchHandler.setupTwitchHandler(subscribers, io, sql);
+
 
 io.sockets.on('connection', connectionMade);
 
@@ -69,7 +70,8 @@ function updateSubs(subs) {
 function updateClientWithPersistedSub(persistedSub) {
   let returnSub = {
     name: persistedSub.username,
-    xp: persistedSub.experience
+    xp: persistedSub.experience,
+    badge: persistedSub.time_subscribed
   }
   console.log("Emmitting to client " + persistedSub.username);
   io.sockets.emit('getSub', returnSub);
@@ -115,6 +117,8 @@ sql.connect(config).then(() => {
 function getLevel(exp) {
   return Math.ceil(0.04*Math.sqrt(exp));
 }
+
+
 
 
 

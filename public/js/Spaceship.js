@@ -1,13 +1,15 @@
 class Spaceship {
-  constructor(name, spaceship) {
+  constructor(name, bronzeSpaceship, silverSpaceship) {
 
-    this.spaceshipImage = spaceship;
+    this.bronzeSpaceship = bronzeSpaceship;
+    this.silverSpaceship = silverSpaceship;
     this.name = name;
     this.x = random(MAP_WIDTH / 2);
     this.y = random(MAP_HEIGHT / 2);
     this.trail = [];
     this.active = false;
 
+    this.ship = "0";
     this.acceleration = createVector(0, 0);
     this.velocity = p5.Vector.random2D();
     this.position = createVector(this.x, this.y);
@@ -100,7 +102,13 @@ class Spaceship {
     translate(this.position.x, this.position.y);
     let radians = atan2(this.velocity.y, this.velocity.x);
     rotate(radians - PI);
-    image(this.spaceshipImage, 0, 0, this.spaceshipImage.width * 0.8, this.spaceshipImage.height * 0.8);
+
+    if (this.ship == "0") {
+      image(this.bronzeSpaceship, 0, 0, this.bronzeSpaceship.width * 0.8, this.bronzeSpaceship.height * 0.8);
+    } else if (this.ship == "3") {
+      image(this.silverSpaceship, 0, 0, this.silverSpaceship.width * 0.8, this.silverSpaceship.height * 0.8);
+    }
+
     pop();
 
 
@@ -147,6 +155,10 @@ class Spaceship {
 
   changeFlame(colour) {
     this.flameColour = colour;
+  }
+
+  changeShip(badgeNumber) {
+    this.ship = badgeNumber;
   }
 
 

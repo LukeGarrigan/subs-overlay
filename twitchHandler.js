@@ -6,12 +6,20 @@ exports.updateSubsForTwitchHandler = function (subscribers) {
   subs = subscribers;
 }
 
-exports.setupTwitchHandler = function(subscribers) {
+exports.setupTwitchHandler = function(subscribers, io, sql) {
   subs = subscribers;
   let client = new tmi.client(myOptions);
   client.connect();
 
   client.on("chat", function (channel, userstate, message, self) {
+
+
+    extractSubBadge(userstate, io, sql);
+
+
+
+
+
 
     if (message === "!flame blue" || message === "!flame orange") {
       let username = userstate.username;
@@ -21,15 +29,14 @@ exports.setupTwitchHandler = function(subscribers) {
           name: username,
           colour: chosenColour
         };
-        socket.emit("changeFlame", colourChange);
+        io.sockets.emit("changeFlame", colourChange);
       }
-
-      client.whisper(username, "You have chosen a " + chosenColour + " flame");
     } else if (message === "!lvl" || message === "!level" || message === "!xp" || message === "!experience") {
       if (isSub(userstate.username, subs)) {
         let sub = getSub(userstate.username, subs);
 
-        let output = "@" + userstate.username + " you are level " + getLevel(sub.xp) + " (" + sub.xp + "xp)";
+        let currentLevel = getLevel(sub.xp);
+        let output = "@" + userstate.username + " you are level " + currentLevel + " (" + sub.xp + "/" +getXpOfNextLevel(currentLevel+1) +"xp)";
         client.action("codeheir", output);
       }
     } else if (message === "!leaderboard") {
@@ -55,7 +62,8 @@ exports.setupTwitchHandler = function(subscribers) {
       let name = message.split(" ")[1];
       if (isSub(name, subs)) {
         let sub = getSub(name, subs);
-        let output = sub.name + " is level " + getLevel(sub.xp) + " (" + sub.xp + ")";
+        let currentLevel = getLevel(sub.xp);
+        let output = sub.name + " is level " + currentLevel + " (" + sub.xp + "/" + getXpOfNextLevel(currentLevel+1) +")";
         client.say("codeheir", output);
       }
     }
@@ -63,7 +71,34 @@ exports.setupTwitchHandler = function(subscribers) {
 };
 
 
-function isSub(username, subs) {
+function extractSubBadge(userstate, io, sql) {
+
+  let username = userstate.username;
+
+  if (isSub(username,subs)) {
+    let subscriberBadge = userstate.badges.subscriber;
+
+    let dto = {
+      username: username,
+      badge: subscriberBadge
+    }
+    io.sockets.emit("updateSubscriberBadge", dto);
+
+
+    let query = `update subs set time_subscribed = '${subscriberBadge}' where username = '${username}'`;
+    let result = sql.query(query);
+
+
+    result.then(data => {
+      console.log("successfully updated players badge");
+    }).catch(err => {
+
+      console.log(err);
+    });
+  }
+}
+
+function isSub(username) {
   for (let sub of subs) {
     if (sub.name === username) {
       return true;
@@ -83,5 +118,9 @@ function getSub(username, subs) {
 
 function getLevel(exp) {
   return Math.ceil(0.04*Math.sqrt(exp));
+}
+
+function getXpOfNextLevel(lvl) {
+  return Math.pow(lvl /0.04, 2);
 }
 
