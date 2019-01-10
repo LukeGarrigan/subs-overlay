@@ -6,75 +6,32 @@ exports.updateSubsForTwitchHandler = function (subscribers) {
   subs = subscribers;
 }
 
+
+
+
 exports.setupTwitchHandler = function (subscribers, io, sql) {
   subs = subscribers;
   let client = new tmi.client(myOptions);
   client.connect();
 
+
   client.on("chat", function (channel, userstate, message, self) {
-
-
     extractSubBadge(userstate, io, sql);
-
-
     if (message === "!flame blue" || message === "!flame orange") {
-      let username = userstate.username;
-      let chosenColour = message.split(" ")[1];
-      if (isSub(username, subs)) {
-        let colourChange = {
-          name: username,
-          colour: chosenColour
-        };
-        io.sockets.emit("changeFlame", colourChange);
-      }
+      processFlameChange(userstate, message);
     } else if (message === "!lvl" || message === "!level" || message === "!xp" || message === "!experience") {
       if (isSub(userstate.username, subs)) {
-        let sub = getSub(userstate.username, subs);
-
-        let currentLevel = getLevel(sub.xp);
-        let output = "@" + userstate.username + " you are level " + currentLevel + " (" + sub.xp + "/" + getXpOfNextLevel(currentLevel + 1) + "xp)";
-        client.action("codeheir", output);
+        processRetrievePlayersLevel(userstate, client);
       }
     } else if (message === "!leaderboard") {
-      subs.sort(function (first, second) {
-        return second.xp - first.xp
-      });
-
-      let output = "1. " + subs[1].name + "\n"
-        + "2. " + subs[2].name + "\n"
-        + "3. " + subs[3].name + "\n";
-
-      let username = userstate.username;
-      if (isSub(username, subs)) {
-        for (let i = 4; i < subs.length; i++) {
-
-          if (subs[i].name === username) {
-            output += " (You are position " + i + ")";
-          }
-        }
-      }
-      client.say("codeheir", output)
+      outputLeaderboard(userstate, client);
     } else if (message.includes("!lvl") || message.includes("!xp") || message.includes("!level") || message.includes("!experience")) {
       let name = message.split(" ")[1];
       if (isSub(name, subs)) {
-        let sub = getSub(name, subs);
-        let currentLevel = getLevel(sub.xp);
-        let output = `${sub.name} is level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)})`;
-        client.say("codeheir", output);
+        getOtherPlayersLvl(name, client);
       }
     } else if (message.includes("!rank")) {
-      let name = message.split(" ")[1];
-      if (isSub(name, subs)) {
-        subs.sort(function (first, second) {
-          return second.xp - first.xp
-        });
-
-        for (let i = 1; i < subs.length; i++) {
-          if (subs[i].name === name) {
-            client.say("codeheir", `${name} is rank ${i}`);
-          }
-        }
-      }
+      processGettingOtherPlayersRank(message, client);
 
     }
   });
@@ -108,6 +65,71 @@ function extractSubBadge(userstate, io, sql) {
   }
 }
 
+function processFlameChange(userstate, message) {
+  let username = userstate.username;
+  let chosenColour = message.split(" ")[1];
+  if (isSub(username, subs)) {
+    let colourChange = {
+      name: username,
+      colour: chosenColour
+    };
+    io.sockets.emit("changeFlame", colourChange);
+  }
+}
+
+
+function processRetrievePlayersLevel(userstate, client) {
+  let sub = getSub(userstate.username, subs);
+  let currentLevel = getLevel(sub.xp);
+  client.action("codeheir", `@ ${userstate.username} you are level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)} xp`);
+}
+
+function outputLeaderboard(userstate, client) {
+  subs.sort(function (first, second) {
+    return second.xp - first.xp
+  });
+
+  let output = "1. " + subs[1].name + "\n"
+    + "2. " + subs[2].name + "\n"
+    + "3. " + subs[3].name + "\n";
+
+  let username = userstate.username;
+  if (isSub(username, subs)) {
+    for (let i = 4; i < subs.length; i++) {
+
+      if (subs[i].name === username) {
+        output += " (You are position " + i + ")";
+      }
+    }
+  }
+  client.say("codeheir", output)
+}
+
+
+
+function getOtherPlayersLvl(name, client) {
+  let sub = getSub(name, subs);
+  let currentLevel = getLevel(sub.xp);
+  let output = `${sub.name} is level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)})`;
+  client.say("codeheir", output);
+}
+
+
+function processGettingOtherPlayersRank(message, client) {
+  let name = message.split(" ")[1];
+  if (isSub(name, subs)) {
+    subs.sort(function (first, second) {
+      return second.xp - first.xp
+    });
+
+    for (let i = 1; i < subs.length; i++) {
+      if (subs[i].name === name) {
+        client.say("codeheir", `${name} is rank ${i}`);
+      }
+    }
+  }
+}
+
 function isSub(username) {
   for (let sub of subs) {
     if (sub.name === username) {
@@ -115,6 +137,7 @@ function isSub(username) {
     }
   }
 }
+
 
 
 function getSub(username, subs) {
