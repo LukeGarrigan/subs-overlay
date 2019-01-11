@@ -24,6 +24,8 @@ class Spaceship {
     this.r = 0;
     this.g = 0;
     this.b = 0;
+
+    this.leveledTimer = 0;
   }
 
   isInViewOfScreen() {
@@ -51,7 +53,18 @@ class Spaceship {
   drawText() {
     push();
 
-    this.lvl = getLevel(this.xp);
+    let currentLevel = getLevel(this.xp);
+
+    if (currentLevel === this.lvl +1) {
+      this.lvl = getLevel(this.xp);
+      this.leveledTimer = 300;
+    }
+
+    if (this.leveledTimer > 0) {
+      this.leveledTimer--;
+      text(`Congratulations ${this.name} you leveled up!`, this.position.x + 45, 20);
+    }
+
     this.active ? fill(0, 255, 0) : fill(255);
     text(this.name + " (" + this.lvl+ ")", this.position.x + 45, this.position.y - 47);
     pop();
