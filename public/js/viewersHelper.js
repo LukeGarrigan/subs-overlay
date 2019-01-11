@@ -18,6 +18,7 @@ function updateCurrentViewers(json) {
   console.log("Successfully made get viewers api call");
   let viewers = json.chatters.viewers;
   viewers = viewers.concat(json.chatters.moderators);
+  viewers = viewers.concat(json.chatters.vips);
 
   numberOfViewers = viewers.length;
   let subs = [];

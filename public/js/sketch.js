@@ -39,6 +39,7 @@ function setup() {
   socket.on('getSub', updateSubs);
   socket.on('changeFlame', changeFlame);
   socket.on('updateSubscriberBadge', updateSubscriberBadge);
+  socket.on('changeFlameRGB', changeFlameRGB);
 
 
   for (let i = 0; i < NUM_ORES; i++) {
@@ -51,7 +52,7 @@ function setup() {
 
 function draw() {
   background(0);
- // clear();
+  // clear();
   apiViewersCount++;
   if (apiViewersCount % 200 === 0) {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
@@ -82,6 +83,13 @@ function updateSubs(data) {
     if (data.name === spaceship.name) {
       spaceship.xp = data.xp;
       spaceship.ship = data.badge;
+
+      if (data.r !== -1 || data.g !== -1 || data.b !== -1) {
+        spaceship.r = data.r;
+        spaceship.g = data.g;
+        spaceship.b = data.b;
+        spaceship.defaultColour = false;
+      }
     }
   }
 }
@@ -93,6 +101,7 @@ function changeFlame(data) {
   for (let spaceship of spaceships) {
     if (spaceship.name === name) {
       spaceship.changeFlame(colour);
+      spaceship.defaultColour = true;
     }
   }
 }
@@ -106,5 +115,16 @@ function updateSubscriberBadge(subscriberDto) {
 
 }
 
+function changeFlameRGB(rgb) {
+  for (let spaceship of spaceships) {
+    if (spaceship.name === rgb.name) {
+
+      spaceship.r = rgb.r;
+      spaceship.g = rgb.g;
+      spaceship.b = rgb.b;
+      spaceship.defaultColour = false;
+    }
+  }
+}
 
 

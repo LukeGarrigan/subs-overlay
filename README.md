@@ -12,6 +12,8 @@ A randomly generated world which displays all codeheir's subs in the amazing sub
 8. Output the amount of experience required to get to the next level - Started, maybe error around here
 9. Display the xp multiplier on the screen
 10. Have flames persist
+11. Add !comeonscreen for OrangeGames369
+12. Add AI to farm points
 
 ## Create a tmi.js api-options
 In order to run locally you'll need to set up tmijs configurations in order to connect to twitch.

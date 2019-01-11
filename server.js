@@ -71,7 +71,10 @@ function updateClientWithPersistedSub(persistedSub) {
   let returnSub = {
     name: persistedSub.username,
     xp: persistedSub.experience,
-    badge: persistedSub.time_subscribed
+    badge: persistedSub.time_subscribed,
+    r: persistedSub.r,
+    g: persistedSub.g,
+    b: persistedSub.b,
   }
   console.log("Emmitting to client " + persistedSub.username);
   io.sockets.emit('getSub', returnSub);

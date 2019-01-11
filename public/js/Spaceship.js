@@ -20,6 +20,10 @@ class Spaceship {
     this.xp = 1;
 
     this.flameColour = "red";
+    this.defaultColour = true;
+    this.r = 0;
+    this.g = 0;
+    this.b = 0;
   }
 
   isInViewOfScreen() {
@@ -31,11 +35,10 @@ class Spaceship {
 
   drawTrail() {
     push();
-    if (this.flameColour === "red") {
-      fill(255, 127, 10, 30);
-    } else if (this.flameColour === "blue") {
-      fill(100,200,255,30)
-    }
+
+
+
+    this.chooseFlameColour();
 
     blendMode(ADD);
     for (let i = 75; i < this.trail.length; i++) {
@@ -83,13 +86,17 @@ class Spaceship {
   }
 
   update() {
+
+
+
     this.trail.push({x: this.position.x, y: this.position.y});
-    if (this.trail.length > 150)
+    if (this.trail.length > 150) {
       this.trail.splice(0, 1);
+    }
+
     this.velocity.limit(1);
     this.velocity.add(this.acceleration);
     this.position.add(this.velocity);
-
   }
 
   draw() {
@@ -162,4 +169,18 @@ class Spaceship {
   }
 
 
+  chooseFlameColour() {
+
+    if (this.defaultColour) {
+      if (this.flameColour === "red") {
+        fill(255, 127, 10, 30);
+      } else if (this.flameColour === "blue") {
+        fill(100,200,255,30)
+      }
+    } else {
+      fill(this.r, this.g, this.b);
+    }
+
+
+  }
 }

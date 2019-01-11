@@ -8,7 +8,6 @@ exports.updateSubsForTwitchHandler = function (subscribers) {
 
 
 
-
 exports.setupTwitchHandler = function (subscribers, io, sql) {
   subs = subscribers;
   let client = new tmi.client(myOptions);
@@ -18,7 +17,7 @@ exports.setupTwitchHandler = function (subscribers, io, sql) {
   client.on("chat", function (channel, userstate, message, self) {
     extractSubBadge(userstate, io, sql);
     if (message === "!flame blue" || message === "!flame orange") {
-      processFlameChange(userstate, message);
+      processFlameChange(userstate, message, io);
     } else if (message === "!lvl" || message === "!level" || message === "!xp" || message === "!experience") {
       if (isSub(userstate.username, subs)) {
         processRetrievePlayersLevel(userstate, client);
@@ -32,7 +31,10 @@ exports.setupTwitchHandler = function (subscribers, io, sql) {
       }
     } else if (message.includes("!rank")) {
       processGettingOtherPlayersRank(message, client);
-
+    } else if (message.includes("!compare")) {
+      processComparingTwoPlayers(message, client, userstate.username);
+    } else if (message.includes("!flame")) {
+      processChangingPlayersFlame(message, client, userstate.username, io, sql);
     }
   });
 };
@@ -65,7 +67,7 @@ function extractSubBadge(userstate, io, sql) {
   }
 }
 
-function processFlameChange(userstate, message) {
+function processFlameChange(userstate, message, io) {
   let username = userstate.username;
   let chosenColour = message.split(" ")[1];
   if (isSub(username, subs)) {
@@ -81,8 +83,10 @@ function processFlameChange(userstate, message) {
 function processRetrievePlayersLevel(userstate, client) {
   let sub = getSub(userstate.username, subs);
   let currentLevel = getLevel(sub.xp);
-  client.action("codeheir", `@ ${userstate.username} you are level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)} xp`);
+  client.action("codeheir", `@ ${userstate.username} you are level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)} xp)`);
 }
+
+
 
 function outputLeaderboard(userstate, client) {
   subs.sort(function (first, second) {
@@ -130,6 +134,30 @@ function processGettingOtherPlayersRank(message, client) {
   }
 }
 
+
+function processComparingTwoPlayers(message, client, sayerName) {
+  let name = message.split(" ")[1];
+  name = name.toLowerCase();
+
+  if (isSub(name) && isSub(sayerName)) {
+
+    let sayersXp = getSub(sayerName).xp;
+    let othersXp = getSub(name).xp;
+
+    if (othersXp > sayersXp) {
+      let difference = othersXp - sayersXp;
+
+      client.say("codeheir", `@${sayerName}: ${name} has ${difference} more xp than you`);
+    } else {
+
+      let difference = sayersXp - othersXp;
+      client.say("codeheir", `@${sayerName}: ${name} has ${difference} less xp than you`);
+    }
+  }
+
+
+}
+
 function isSub(username) {
   for (let sub of subs) {
     if (sub.name === username) {
@@ -139,8 +167,59 @@ function isSub(username) {
 }
 
 
+function processChangingPlayersFlame(message, client, username, io, sql) {
+  if (isSub(username)) {
+    let input = message.split(" ");
+    let red = input[1];
+    let green = input[2];
+    let blue = input[3];
 
-function getSub(username, subs) {
+    let redNumber = parseInt(red);
+    let greenNumber = parseInt(green);
+    let blueNumber = parseInt(blue);
+
+    if (!isNaN(redNumber) && !isNaN(greenNumber) && !isNaN(blueNumber)) {
+
+      if (areValidColours(redNumber, greenNumber, blueNumber)) {
+        let rgb = {
+          r: redNumber,
+          g: greenNumber,
+          b: blueNumber,
+          name: username
+        }
+        io.sockets.emit("changeFlameRGB", rgb);
+
+        persistNewFlameColour(rgb, sql);
+
+
+      }
+    }
+  }
+}
+
+
+
+
+function areValidColours(redNumber, greenNumber, blueNumber) {
+  return redNumber >= 0 && redNumber <= 255 && greenNumber >= 0 && greenNumber <= 255 && blueNumber >= 0 && blueNumber <= 255;
+}
+
+function persistNewFlameColour(rgb, sql) {
+  let query = `update subs set r=${rgb.r}, g=${rgb.g}, b=${rgb.b} where username ='${rgb.name}'`;
+
+  let result = sql.query(query);
+
+  result.then(data => {
+    console.log("successfully updated players badge");
+  }).catch(err => {
+    console.log(err);
+  });
+
+}
+
+
+
+function getSub(username) {
   for (let sub of subs) {
     if (sub.name === username) {
       return sub;
