@@ -56,10 +56,10 @@ class Spaceship {
     let currentLevel = getLevel(this.xp);
 
     if (currentLevel === this.lvl +1) {
-      this.lvl = getLevel(this.xp);
       this.leveledTimer = 300;
     }
 
+    this.lvl = getLevel(this.xp);
     if (this.leveledTimer > 0) {
       this.leveledTimer--;
       text(`Congratulations ${this.name} you leveled up!`, this.position.x + 45, 20);

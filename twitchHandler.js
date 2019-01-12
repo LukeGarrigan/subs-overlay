@@ -1,12 +1,11 @@
 const myOptions = require('./api-options');
 const tmi = require('tmi.js');
+const subModel = require('./models/sub.js')
 
 let subs = [];
 exports.updateSubsForTwitchHandler = function (subscribers) {
   subs = subscribers;
 }
-
-
 
 exports.setupTwitchHandler = function (subscribers, io, sql) {
   subs = subscribers;
@@ -47,23 +46,12 @@ function extractSubBadge(userstate, io, sql) {
   if (isSub(username, subs)) {
     let subscriberBadge = userstate.badges.subscriber;
 
-    let dto = {
+    let subscriberBadgeDto = {
       username: username,
       badge: subscriberBadge
     }
-    io.sockets.emit("updateSubscriberBadge", dto);
-
-
-    let query = `update subs set time_subscribed = '${subscriberBadge}' where username = '${username}'`;
-    let result = sql.query(query);
-
-
-    result.then(data => {
-      console.log("successfully updated players badge");
-    }).catch(err => {
-
-      console.log(err);
-    });
+    io.sockets.emit("updateSubscriberBadge", subscriberBadgeDto);
+    subModel.updateSubscriberBadgeByName(sql, subscriberBadgeDto);
   }
 }
 
@@ -197,6 +185,14 @@ function processChangingPlayersFlame(message, client, username, io, sql) {
   }
 }
 
+
+exports.createNewSub = function(sub, sql) {
+  subModel.createNewSub(sub, sql)
+}
+
+exports.updatePersistedSub = function(sub, sql) {
+  subModel.updatePersistedSub(sub, sql);
+}
 
 
 

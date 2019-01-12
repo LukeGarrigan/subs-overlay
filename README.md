@@ -14,6 +14,8 @@ A randomly generated world which displays all codeheir's subs in the amazing sub
 10. Have flames persist
 11. Add !comeonscreen for OrangeGames369
 12. Add AI to farm points
+13. Figure out how to retrieve
+
 
 ## Create a tmi.js api-options
 In order to run locally you'll need to set up tmijs configurations in order to connect to twitch.
