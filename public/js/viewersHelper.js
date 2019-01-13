@@ -34,11 +34,11 @@ function updateCurrentViewers(json) {
     }
     let sub = {
       name: spaceship.name,
-      xp : spaceship.xp
+      xp : spaceship.xp,
+      active: spaceship.active
     };
     subs.push(sub);
   }
-
   numberOfSubsViewing = spaceships.filter(ship => ship.active).length;
 
   socket.emit('updateSubs', subs);

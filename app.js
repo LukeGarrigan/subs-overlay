@@ -32,8 +32,8 @@ function connectionMade(socket) {
 
 function updateSubs(subs) {
   console.log("Updating subs");
-  twitchHandler.updateSubsForTwitchHandler(subs);
   subscribers = subs;
+  twitchHandler.updateSubsForTwitchHandler(subscribers);
   for (let sub of subs) {
 
 

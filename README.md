@@ -13,6 +13,7 @@ A randomly generated world which displays all codeheir's subs in the amazing sub
 9. Add !comeonscreen for OrangeGames369
 10. Add AI to farm points
 11. Figure out how to retrieve
+12. Very strange issue with active subs server side
 
 
 ## Create a tmi.js api-options

@@ -5,30 +5,27 @@ const subModel = require('./models/sub.js')
 let subs = [];
 exports.updateSubsForTwitchHandler = function (subscribers) {
   subs = subscribers;
-}
+};
+
 
 exports.setupTwitchHandler = function (subscribers, io, sql) {
   subs = subscribers;
   let client = new tmi.client(myOptions);
   client.connect();
-
-
   client.on("chat", function (channel, userstate, message, self) {
     extractSubBadge(userstate, io, sql);
     if (message === "!flame blue" || message === "!flame orange") {
       processFlameChange(userstate, message, io);
+    }  else if (message === "!active") {
+      displayActiveSubs(client);
     } else if (message === "!lvl" || message === "!level" || message === "!xp" || message === "!experience") {
-      if (isSub(userstate.username.toLowerCase(), subs)) {
-        processRetrievePlayersLevel(userstate, client);
-      }
+      processRetrievePlayersLevel(userstate, client);
+    } else if (message === "!rank") {
+      outputPlayersRank(userstate.username, client);
     } else if (message === "!leaderboard") {
       outputLeaderboard(userstate, client);
     } else if (message.includes("!lvl") || message.includes("!xp") || message.includes("!level") || message.includes("!experience")) {
-      let name = message.split(" ")[1];
-      name = name.toLowerCase();
-      if (isSub(name, subs)) {
-        getOtherPlayersLvl(name, client);
-      }
+      getOtherPlayersLvl(message, client);
     } else if (message.includes("!rank")) {
       processGettingOtherPlayersRank(message, client);
     } else if (message.includes("!compare")) {
@@ -44,7 +41,7 @@ function extractSubBadge(userstate, io, sql) {
 
   let username = userstate.username;
 
-  if (isSub(username, subs)) {
+  if (isSub(username)) {
     let subscriberBadge = userstate.badges.subscriber;
 
     let subscriberBadgeDto = {
@@ -59,7 +56,7 @@ function extractSubBadge(userstate, io, sql) {
 function processFlameChange(userstate, message, io) {
   let username = userstate.username;
   let chosenColour = message.split(" ")[1];
-  if (isSub(username, subs)) {
+  if (isSub(username)) {
     let colourChange = {
       name: username,
       colour: chosenColour
@@ -70,11 +67,12 @@ function processFlameChange(userstate, message, io) {
 
 
 function processRetrievePlayersLevel(userstate, client) {
-  let sub = getSub(userstate.username, subs);
-  let currentLevel = getLevel(sub.xp);
-  client.action("codeheir", `@ ${userstate.username} you are level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)} xp)`);
+  if (isSub(userstate.username.toLowerCase())) {
+    let sub = getSub(userstate.username, subs);
+    let currentLevel = getLevel(sub.xp);
+    client.action("codeheir", `@ ${userstate.username} you are level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)} xp)`);
+  }
 }
-
 
 
 function outputLeaderboard(userstate, client) {
@@ -99,17 +97,43 @@ function outputLeaderboard(userstate, client) {
 }
 
 
+function getOtherPlayersLvl(message, client) {
+  let name = message.split(" ")[1];
+  name = name.toLowerCase();
+  if (isSub(name)) {
+    let sub = getSub(name);
+    let currentLevel = getLevel(sub.xp);
+    let output = `${sub.name} is level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)})`;
+    client.say("codeheir", output);
+  }
+}
 
-function getOtherPlayersLvl(name, client) {
-  let sub = getSub(name, subs);
-  let currentLevel = getLevel(sub.xp);
-  let output = `${sub.name} is level ${currentLevel} (${sub.xp}/${getXpOfNextLevel(currentLevel + 1)})`;
-  client.say("codeheir", output);
+
+
+function displayActiveSubs(client) {
+
+  let viewingSubs = subs.filter(currentSub => currentSub.active);
+
+  let outputString = "";
+
+  for (let sub of viewingSubs) {
+    outputString += sub.name + " "
+  }
+  client.say("codeheir", outputString);
 }
 
 
 function processGettingOtherPlayersRank(message, client) {
-  let name = message.split(" ")[1];
+  let nameOrNumber = message.split(" ")[1];
+  if (isNaN(nameOrNumber)) {
+    outputPlayersRank(nameOrNumber, client);
+  } else {
+    outputPlayerNameAtRank(nameOrNumber, client);
+  }
+
+}
+
+function outputPlayersRank(name, client) {
   if (isSub(name, subs)) {
     subs.sort(function (first, second) {
       return second.xp - first.xp
@@ -121,6 +145,21 @@ function processGettingOtherPlayersRank(message, client) {
       }
     }
   }
+}
+
+
+function outputPlayerNameAtRank(nameOrNumber, client) {
+  let number = parseInt(nameOrNumber);
+  subs.sort(function (first, second) {
+    return second.xp - first.xp
+  });
+
+  if (number < subs.length && number >= 0) {
+    client.say("codeheir", `${subs[number].name} is rank ${number}`);
+  }
+
+
+
 }
 
 
@@ -187,14 +226,13 @@ function processChangingPlayersFlame(message, client, username, io, sql) {
 }
 
 
-exports.createNewSub = function(sub, sql) {
+exports.createNewSub = function (sub, sql) {
   subModel.createNewSub(sub, sql)
 }
 
-exports.updatePersistedSub = function(sub, sql) {
+exports.updatePersistedSub = function (sub, sql) {
   subModel.updatePersistedSub(sub, sql);
 }
-
 
 
 function areValidColours(redNumber, greenNumber, blueNumber) {
@@ -213,7 +251,6 @@ function persistNewFlameColour(rgb, sql) {
   });
 
 }
-
 
 
 function getSub(username) {
