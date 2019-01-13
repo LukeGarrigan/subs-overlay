@@ -10,7 +10,8 @@ let subs = [];
 let ores = [];
 let apiViewersCount = 0;
 let socket;
-let numberOfViewers = 0;
+let numberOfSubsViewing = 0;
+let multiplier = 1;
 function preload() {
   subs = loadStrings("subscribers.txt");
 }
@@ -47,8 +48,8 @@ function setup() {
     ores.push(ore);
   }
 
-
 }
+
 
 function draw() {
   background(0);
@@ -76,55 +77,20 @@ function draw() {
     }
   }
   displayMembersCount();
+  displayMultiplier();
 }
 
-function updateSubs(data) {
-  for (let spaceship of spaceships) {
-    if (data.name === spaceship.name) {
-      spaceship.xp = data.xp;
-      spaceship.ship = data.badge;
 
-      if (data.r !== -1 || data.g !== -1 || data.b !== -1) {
-        spaceship.r = data.r;
-        spaceship.g = data.g;
-        spaceship.b = data.b;
-        spaceship.defaultColour = false;
-      }
-    }
-  }
+
+
+function displayMultiplier() {
+  push();
+  textAlign(CENTER);
+  fill(100, 255, 100);
+  textSize(20);
+  text(`x${multiplier} xp`, width-60, height-50);
+  textSize(15);
+  text(`(${numberOfSubsViewing} active subs)`,  width-60, height-20);
+  pop();
 }
-
-function changeFlame(data) {
-  let name = data.name;
-  let colour = data.colour;
-
-  for (let spaceship of spaceships) {
-    if (spaceship.name === name) {
-      spaceship.changeFlame(colour);
-      spaceship.defaultColour = true;
-    }
-  }
-}
-
-function updateSubscriberBadge(subscriberDto) {
-  for (let spaceship of spaceships) {
-    if (spaceship.name === subscriberDto.username) {
-      spaceship.changeShip(subscriberDto.badge);
-    }
-  }
-
-}
-
-function changeFlameRGB(rgb) {
-  for (let spaceship of spaceships) {
-    if (spaceship.name === rgb.name) {
-
-      spaceship.r = rgb.r;
-      spaceship.g = rgb.g;
-      spaceship.b = rgb.b;
-      spaceship.defaultColour = false;
-    }
-  }
-}
-
 

@@ -18,13 +18,14 @@ exports.setupTwitchHandler = function (subscribers, io, sql) {
     if (message === "!flame blue" || message === "!flame orange") {
       processFlameChange(userstate, message, io);
     } else if (message === "!lvl" || message === "!level" || message === "!xp" || message === "!experience") {
-      if (isSub(userstate.username, subs)) {
+      if (isSub(userstate.username.toLowerCase(), subs)) {
         processRetrievePlayersLevel(userstate, client);
       }
     } else if (message === "!leaderboard") {
       outputLeaderboard(userstate, client);
     } else if (message.includes("!lvl") || message.includes("!xp") || message.includes("!level") || message.includes("!experience")) {
       let name = message.split(" ")[1];
+      name = name.toLowerCase();
       if (isSub(name, subs)) {
         getOtherPlayersLvl(name, client);
       }

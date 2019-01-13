@@ -10,11 +10,9 @@ A randomly generated world which displays all codeheir's subs in the amazing sub
 6. Create guide for README.md on how to set up the database
 7. Do a recording of the screen and post a gif in here too
 8. Output the amount of experience required to get to the next level - Started, maybe error around here
-9. Display the xp multiplier on the screen
-10. Have flames persist
-11. Add !comeonscreen for OrangeGames369
-12. Add AI to farm points
-13. Figure out how to retrieve
+9. Add !comeonscreen for OrangeGames369
+10. Add AI to farm points
+11. Figure out how to retrieve
 
 
 ## Create a tmi.js api-options

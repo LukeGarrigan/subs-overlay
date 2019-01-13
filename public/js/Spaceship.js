@@ -39,7 +39,6 @@ class Spaceship {
     push();
 
 
-
     this.chooseFlameColour();
 
     blendMode(ADD);
@@ -54,8 +53,7 @@ class Spaceship {
     push();
 
     let currentLevel = getLevel(this.xp);
-
-    if (currentLevel === this.lvl +1) {
+    if (currentLevel === this.lvl + 1) {
       this.leveledTimer = 300;
     }
 
@@ -66,7 +64,7 @@ class Spaceship {
     }
 
     this.active ? fill(0, 255, 0) : fill(255);
-    text(this.name + " (" + this.lvl+ ")", this.position.x + 45, this.position.y - 47);
+    text(`${this.name} (${this.lvl})`, this.position.x + 45, this.position.y - 47);
     pop();
   }
 
@@ -99,7 +97,6 @@ class Spaceship {
   }
 
   update() {
-
 
 
     this.trail.push({x: this.position.x, y: this.position.y});
@@ -162,15 +159,7 @@ class Spaceship {
 
   mined() {
     let increment = this.active ? 6 : 2;
-
-    if (numberOfViewers > 20) {
-      this.xp += increment*2
-    } else if (numberOfViewers > 10) {
-      this.xp += increment*1.5
-    } else {
-      this.xp += increment;
-    }
-
+    this.xp += increment * multiplier;
   }
 
   changeFlame(colour) {
@@ -183,17 +172,14 @@ class Spaceship {
 
 
   chooseFlameColour() {
-
     if (this.defaultColour) {
       if (this.flameColour === "red") {
         fill(255, 127, 10, 30);
       } else if (this.flameColour === "blue") {
-        fill(100,200,255,30)
+        fill(100, 200, 255, 30)
       }
     } else {
       fill(this.r, this.g, this.b);
     }
-
-
   }
 }
