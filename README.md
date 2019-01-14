@@ -3,17 +3,17 @@
 A randomly generated world which displays all codeheir's subs in the amazing subspace club
 
 ## TODO:
-1. Make it use the twitch api which retrieves all subs
-2. Have it poll the api to update current subs
-4. Sort out this issue with potential security vulnerability
-5. Do a little bit of refactoring, especially splitting up the twitch commands
-6. Create guide for README.md on how to set up the database
-7. Do a recording of the screen and post a gif in here too
-8. Output the amount of experience required to get to the next level - Started, maybe error around here
-9. Add !comeonscreen for OrangeGames369
-10. Add AI to farm points
-11. Figure out how to retrieve
-12. Very strange issue with active subs server side
+* Make it use the twitch api which retrieves all subs
+* Have it poll the api to update current subs
+* Sort out this issue with potential security vulnerability
+* Do a little bit of refactoring, especially splitting up the twitch commands
+* Create guide for README.md on how to set up the database
+* Do a recording of the screen and post a gif in here too
+* Output the amount of experience required to get to the next level - Started, maybe error around here
+* Add !comeonscreen for OrangeGames369
+* Add AI to farm points
+* Figure out how to retrieve
+
 
 
 ## Create a tmi.js api-options
