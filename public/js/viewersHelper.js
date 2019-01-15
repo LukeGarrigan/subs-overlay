@@ -24,12 +24,7 @@ function updateCurrentViewers(json) {
 
   let subs = [];
   for (let spaceship of spaceships) {
-    if (isSubCurrentlyActive(spaceship.name, viewers)) {
-      if (!spaceship.active) {
-        console.log(spaceship.name +" is now watching!");
-        spaceship.active = true;
-      }
-    } else {
+    if (!isSubCurrentlyActive(spaceship.name, viewers)) {
       spaceship.active = false;
     }
     let sub = {

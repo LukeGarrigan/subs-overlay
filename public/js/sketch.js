@@ -41,6 +41,7 @@ function setup() {
   socket.on('changeFlame', changeFlame);
   socket.on('updateSubscriberBadge', updateSubscriberBadge);
   socket.on('changeFlameRGB', changeFlameRGB);
+  socket.on('updateSubNowActive', updateSubNowActive);
 
 
   for (let i = 0; i < NUM_ORES; i++) {
@@ -52,8 +53,8 @@ function setup() {
 
 
 function draw() {
-  // background(0);
-  clear();
+  background(0);
+  // clear();
   apiViewersCount++;
   if (apiViewersCount % 200 === 0) {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)

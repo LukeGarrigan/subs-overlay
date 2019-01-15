@@ -46,3 +46,12 @@ function changeFlameRGB(rgb) {
     }
   }
 }
+
+
+function updateSubNowActive(sub) {
+  for (let spaceship of spaceships) {
+    if (spaceship.name === sub.name) {
+      spaceship.active = true;
+    }
+  }
+}

@@ -14,9 +14,10 @@ exports.setupTwitchHandler = function (subscribers, io, sql) {
   client.connect();
   client.on("chat", function (channel, userstate, message, self) {
     extractSubBadge(userstate, io, sql);
+    setSubToActive(userstate, io);
     if (message === "!flame blue" || message === "!flame orange") {
       processFlameChange(userstate, message, io);
-    }  else if (message === "!active") {
+    } else if (message === "!active") {
       displayActiveSubs(client);
     } else if (message === "!lvl" || message === "!level" || message === "!xp" || message === "!experience") {
       processRetrievePlayersLevel(userstate, client);
@@ -37,13 +38,22 @@ exports.setupTwitchHandler = function (subscribers, io, sql) {
 };
 
 
-function extractSubBadge(userstate, io, sql) {
+function setSubToActive(userstate, io) {
+  if (isSub(userstate.username)) {
+    let currentSub = getSub(userstate.username);
+    if (!currentSub.isActive) {
+      currentSub.isActive = true;
+      io.sockets.emit("updateSubNowActive", currentSub);
+    }
+  }
+}
 
+
+function extractSubBadge(userstate, io, sql) {
   let username = userstate.username;
 
   if (isSub(username)) {
     let subscriberBadge = userstate.badges.subscriber;
-
     let subscriberBadgeDto = {
       username: username,
       badge: subscriberBadge
@@ -109,11 +119,8 @@ function getOtherPlayersLvl(message, client) {
 }
 
 
-
 function displayActiveSubs(client) {
-
   let viewingSubs = subs.filter(currentSub => currentSub.active);
-
   let outputString = "";
 
   for (let sub of viewingSubs) {
@@ -157,8 +164,6 @@ function outputPlayerNameAtRank(nameOrNumber, client) {
   if (number < subs.length && number >= 0) {
     client.say("codeheir", `${subs[number].name} is rank ${number}`);
   }
-
-
 
 }
 
@@ -218,8 +223,6 @@ function processChangingPlayersFlame(message, client, username, io, sql) {
         io.sockets.emit("changeFlameRGB", rgb);
 
         persistNewFlameColour(rgb, sql);
-
-
       }
     }
   }
