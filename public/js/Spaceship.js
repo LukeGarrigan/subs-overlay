@@ -61,7 +61,13 @@ class Spaceship {
     if (this.leveledTimer > 0) {
       this.leveledTimer--;
 
-      text(`Congratulations ${this.name} you leveled up!`, width/2, height/2);
+      push();
+      fill(0, 255, 0);
+      textAlign(CENTER);
+      textSize(30);
+      text(`Congratulations ${this.name}`, width/2, height/2);
+      text("You leveled up!", width/2, height/2+40);
+      pop();
     }
 
     this.active ? fill(0, 255, 0) : fill(255);
