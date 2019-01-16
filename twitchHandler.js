@@ -109,6 +109,10 @@ function outputLeaderboard(userstate, client) {
 
 function getOtherPlayersLvl(message, client) {
   let name = message.split(" ")[1];
+  if (name === undefined) {
+    return;
+  }
+
   name = name.toLowerCase();
   if (isSub(name)) {
     let sub = getSub(name);
@@ -168,8 +172,12 @@ function outputPlayerNameAtRank(nameOrNumber, client) {
 }
 
 
-function processComparingTwoPlayers(message, client, sayerName) {
+function comparePlayerToSpeaker(message, sayerName, client) {
   let name = message.split(" ")[1];
+
+  if (name === undefined) {
+    return;
+  }
   name = name.toLowerCase();
 
   if (isSub(name) && isSub(sayerName)) {
@@ -187,8 +195,14 @@ function processComparingTwoPlayers(message, client, sayerName) {
       client.say("codeheir", `@${sayerName}: ${name} has ${difference} less xp than you`);
     }
   }
+}
 
-
+function processComparingTwoPlayers(message, client, sayerName) {
+  if (message.split(" ").length === 3) {
+    compareTwoDifferentPlayer(message, client, sayerName);
+  } else {
+    comparePlayerToSpeaker(message, sayerName, client);
+  }
 }
 
 function isSub(username) {
@@ -253,6 +267,33 @@ function persistNewFlameColour(rgb, sql) {
     console.log(err);
   });
 
+}
+
+
+function compareTwoDifferentPlayer(message, client, sayerName) {
+  let command = message.split(" ");
+  //  !compare Poketz OrangeGames
+  let firstName = command[1];
+  firstName = firstName.toLowerCase();
+
+  let secondName = command[2];
+  secondName = secondName.toLowerCase();
+
+
+  if (isSub(firstName) && isSub(secondName)) {
+
+    let firstSub = getSub(firstName);
+    let secondSub = getSub(secondName);
+
+    let difference = Math.abs(firstSub.xp - secondSub.xp);
+    if (firstSub.xp > secondSub.xp) {
+      client.say("codeheir", `@${sayerName}: ${firstName} has ${difference} more xp than ${secondName}`);
+    } else if (firstSub.xp === secondSub.xp) {
+      client.say("codeheir", `@${sayerName}: ${firstName} has the same xp as ${secondName} (${firstSub.xp})`);
+    } else {
+      client.say("codeheir", `@${sayerName}: ${secondName} has ${difference} more xp than ${firstName}`);
+    }
+  }
 }
 
 

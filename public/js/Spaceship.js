@@ -53,14 +53,15 @@ class Spaceship {
     push();
 
     let currentLevel = getLevel(this.xp);
-    if (currentLevel === this.lvl + 1) {
+    if (currentLevel === (this.lvl + 1)) {
       this.leveledTimer = 300;
     }
 
     this.lvl = getLevel(this.xp);
     if (this.leveledTimer > 0) {
       this.leveledTimer--;
-      text(`Congratulations ${this.name} you leveled up!`, this.position.x + 45, 20);
+
+      text(`Congratulations ${this.name} you leveled up!`, width/2, height/2);
     }
 
     this.active ? fill(0, 255, 0) : fill(255);
@@ -97,7 +98,6 @@ class Spaceship {
   }
 
   update() {
-
 
     this.trail.push({x: this.position.x, y: this.position.y});
     if (this.trail.length > 150) {

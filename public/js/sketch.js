@@ -30,9 +30,7 @@ function setup() {
     let name = subscriberInfo[0];
     let dateSubbed = subscriberInfo[1];
     let date = Date.parse(dateSubbed);
-    let spaceship;
-
-    spaceship = new Spaceship(name, bronzeSpaceship, silverSpaceship);
+    let spaceship = new Spaceship(name, bronzeSpaceship, silverSpaceship);
     spaceships.push(spaceship);
   }
 
@@ -53,8 +51,8 @@ function setup() {
 
 
 function draw() {
-  background(0);
-  // clear();
+  // background(0);
+  clear();
   apiViewersCount++;
   if (apiViewersCount % 200 === 0) {
     loadJSON(getCurrentViewersUrl(), updateCurrentViewers)
