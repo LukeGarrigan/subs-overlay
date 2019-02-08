@@ -55,3 +55,12 @@ function updateSubNowActive(sub) {
     }
   }
 }
+
+
+function updateSubNowInActive(sub) {
+  for (let spaceship of spaceships) {
+    if (spaceship.name === sub.name) {
+      spaceship.active = false;
+    }
+  }
+}

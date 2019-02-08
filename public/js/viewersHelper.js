@@ -22,6 +22,9 @@ function updateCurrentViewers(json) {
   viewers = viewers.concat(json.chatters.vips);
   setMultiplier();
 
+
+
+
   let subs = [];
   for (let spaceship of spaceships) {
     if (!isSubCurrentlyActive(spaceship.name, viewers)) {

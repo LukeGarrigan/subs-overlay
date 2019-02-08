@@ -33,10 +33,20 @@ exports.setupTwitchHandler = function (subscribers, io, sql) {
       processComparingTwoPlayers(message, client, userstate.username);
     } else if (message.includes("!flame")) {
       processChangingPlayersFlame(message, client, userstate.username, io, sql);
+    } else if (message.includes("!makeinactive")) {
+      processMakingAnAfkBuggerInactive(message, client, userstate.username, io);
     }
   });
 };
 
+function processMakingAnAfkBuggerInactive(message, client, username, io) {
+  let afkUser = message.split(" ")[1];
+  let currentSub = getSub(afkUser);
+  if (currentSub && username === "codeheir") {
+    currentSub.isActive = false;
+    io.sockets.emit("updateSubNowInActive", currentSub);
+  }
+}
 
 function setSubToActive(userstate, io) {
   if (isSub(userstate.username)) {
